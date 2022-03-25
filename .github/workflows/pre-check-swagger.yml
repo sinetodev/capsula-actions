@@ -1,0 +1,37 @@
+name: Swagger merge - checking for swagger merge files
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        default: 16.x
+        description: Fix Node.js version
+        required: true
+        type: string
+      working-directory:
+        default: ./
+        description: Working directory where tests will be running
+        required: true
+        type: string
+
+jobs:
+  pre-check:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ inputs.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Swagger merge documentation
+        run: yarn swagger:merge

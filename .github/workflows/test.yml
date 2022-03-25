@@ -1,4 +1,4 @@
-name: Pre-check - Type, lint and format checking
+name: Test - test codebase
 
 on:
   workflow_call:
