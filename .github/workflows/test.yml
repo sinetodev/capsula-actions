@@ -1,0 +1,91 @@
+name: Pre-check - Type, lint and format checking
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        default: 16.x
+        description: Fix Node.js version
+        required: false
+        type: string
+      working-directory:
+        description: Working directory where tests will be running
+        required: true
+        type: string
+      api-host:
+        description: API host
+        required: true
+        type: string
+      api-port:
+        description: API port
+        required: true
+        type: string
+      db-host:
+        description: Database host on docker container
+        required: true
+        type: string
+      db-port:
+        description: Database port on docker container
+        required: true
+        type: string
+      db-name:
+        description: Database name on docker container
+        required: true
+        type: string
+      db-username:
+        description: Username to access database
+        required: true
+        type: string
+      db-password:
+        description: Password to access database
+        required: true
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container: node:latest
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: ${{ inputs.db-name }}
+          POSTGRES_USER: ${{ inputs.db-username }}
+          POSTGRES_PASSWORD: ${{ inputs.db-password }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ inputs.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Test code
+        run: yarn test:ci
+        env:
+          PORT: ${{ inputs.api-port }}
+          HOST: ${{ inputs.api-host }}
+          DB_HOST: ${{ inputs.db-host }}
+          DB_PORT: ${{ inputs.db-port }}
+          DB_NAME: ${{ inputs.db-name }}
+          DB_USERNAME: ${{ inputs.db-username }}
+          DB_PASSWORD: ${{ inputs.db-password }}
+
+      - name: Build code
+        run: yarn build
