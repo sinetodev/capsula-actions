@@ -76,7 +76,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Test code
+      - name: Test codebase and show code coverage
         run: yarn test:ci
         env:
           PORT: ${{ inputs.api-port }}
@@ -87,5 +87,5 @@ jobs:
           DB_USERNAME: ${{ inputs.db-username }}
           DB_PASSWORD: ${{ inputs.db-password }}
 
-      - name: Build code
+      - name: Build codebase
         run: yarn build
