@@ -1,0 +1,42 @@
+name: Pre-check - Type, lint and format checking
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: Fix Node.js version
+        required: true
+        type: string
+      working-directory:
+        description: Working directory where tests will be running
+        required: true
+        type: string
+
+jobs:
+  pre-check:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [${{ inputs.node-version }}]
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Code format checking
+        run: yarn format
+
+      - name: Code linter checking
+        run: yarn lint
