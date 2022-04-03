@@ -4,12 +4,10 @@ on:
   workflow_call:
     inputs:
       node-version:
-        default: 16.x
         description: Fix Node.js version
         required: true
         type: string
       working-directory:
-        default: ./
         description: Working directory where tests will be running
         required: true
         type: string
@@ -29,7 +27,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ inputs.node-version }}
-          cache: yarn
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
