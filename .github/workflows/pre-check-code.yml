@@ -16,9 +16,9 @@ jobs:
   pre-check:
     runs-on: ubuntu-latest
 
-    # defaults:
-    #   run:
-    #     working-directory: ${{ inputs.working-directory }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
 
     steps:
       - uses: actions/checkout@v3
