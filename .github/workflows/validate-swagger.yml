@@ -1,0 +1,28 @@
+name: Validate Swagger - validate format documentation with swagger editor
+
+on:
+  workflow_call:
+    inputs:
+      definition-file:
+        description: Path to documentation to validate
+        required: true
+        type: string
+
+jobs:
+  validate-document:
+    runs-on: ubuntu-latest
+
+    services:
+      swagger-editor:
+        image: swaggerapi/swagger-editor
+        ports:
+          - 80:8080
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Validate OpenAPI definition
+        uses: char0n/swagger-editor-validate@v1
+        with:
+          swagger-editor-url: http://localhost/
+          definition-file: ${{ inputs.definition-file }}
