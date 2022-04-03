@@ -26,15 +26,15 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Use Node.js ${{ inputs.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ inputs.node-version }}
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      # - name: Code format checking
-      #   run: yarn format
+      - name: Code format checking
+        run: yarn format
 
       - name: Code linter checking
         run: yarn lint
